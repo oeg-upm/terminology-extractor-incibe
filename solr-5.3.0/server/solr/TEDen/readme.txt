@@ -1,0 +1,1 @@
+This folder provides a example setting of core instance for JATE2.0 plugin mode.
