@@ -118,12 +118,8 @@ public class Populator {
      SolrInputDocument document = new SolrInputDocument();
         document.addField("id", id);
         document.addField("text", text );
-        //System.out.println("solr document");
-
-        
+      
         solrClient.add(document);
-        //System.out.println("added");
-    
         
     }
     

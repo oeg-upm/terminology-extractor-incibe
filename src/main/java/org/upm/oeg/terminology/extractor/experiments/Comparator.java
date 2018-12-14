@@ -40,12 +40,7 @@ public class Comparator {
     }
 
     
-    public void compareCvalue(){
-    
-        
-    
-    
-    }
+   
     
     public static HashSet createSet(File f) throws UnsupportedEncodingException, FileNotFoundException, IOException{
      

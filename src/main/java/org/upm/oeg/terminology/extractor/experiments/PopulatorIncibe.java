@@ -24,7 +24,7 @@ public class PopulatorIncibe {
          
         // populateCoreWithCorpus("Cordis", "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\CORDIS\\Corpus");
          
-         populateCoreWithCorpus("Crawler", "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\CRAWLER\\Corpus");
+         //populateCoreWithCorpus("Crawler", "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\CRAWLER\\Corpus");
          
         // populateCoreWithCorpus("Scopus", "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\SCOPUS\\Corpus");
     
@@ -33,5 +33,6 @@ public class PopulatorIncibe {
            
            
          //  populateCoreWithCorpus("Coppa", "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\COPPA\\Corpus");
+         
     }
 }

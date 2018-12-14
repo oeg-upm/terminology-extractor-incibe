@@ -6,7 +6,9 @@
 package org.upm.oeg.terminology.extractor.corpora;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -18,6 +20,8 @@ import org.jdom.input.SAXBuilder;
  */
 public class TEDExtractor extends Extractor{
     
+    
+    final static Logger logger = Logger.getLogger(TEDExtractor.class); 
     
     private File DataSource;
     private File OutputDir;
@@ -40,31 +44,31 @@ public class TEDExtractor extends Extractor{
 
   
     
-    public void extractCorpus(String Language, File Directory) {
+    public void createCorpus(String Language, File Directory) {
 
         for (File f : Directory.listFiles()) {
 
             if (f.isDirectory()) {
-                extractCorpus(Language, f);
+                createCorpus(Language, f);
             }
 
             if ((f.isFile()) && (f.getName().endsWith(".xml"))) {
 
-                processFile(Language, f);
+                parseFile(Language, f);
             }
 
         }
 
     }
 
-    public void processFile(String Language, File xmlFile) {
+    public void parseFile(String Language, File xmlFile) {
 
         String text = parseXMLFile(Language, xmlFile);
         if (text == null) {
             return;
         }
 
-        createCompleteFileWithText(xmlFile.getName(), this.getOutputDir().getAbsolutePath(), text);
+        createFile(xmlFile.getName(), this.getOutputDir().getAbsolutePath(), text);
 
     }
     
@@ -72,7 +76,15 @@ public class TEDExtractor extends Extractor{
 
         String res = "";
         SAXBuilder builder = new SAXBuilder();
-        //File xmlFile = new File("c:\\file.xml");
+        
+        HashSet CPVSet =new HashSet();
+        CPVSet.add("79417000");
+        CPVSet.add("79700000");
+        CPVSet.add("80330000");
+        CPVSet.add("80550000");
+        CPVSet.add("80600000");
+     
+
 
         try {
 
@@ -95,13 +107,23 @@ public class TEDExtractor extends Extractor{
                 if (lang.equals(Language)) {
 
                     Element contr = elem.getChild("OBJECT_CONTRACT", ns);
+                    Element cpv = contr.getChild("CPV_MAIN", ns);
+                    Element cpvcode = cpv.getChild("CPV_CODE",ns);
+                    
+                    String attcpv= cpvcode.getAttributeValue("CODE");
 
+                    if(!CPVSet.contains(attcpv)){
+                        continue;  
+                    }
+                    
+
+                    
                     Element descr = contr.getChild("SHORT_DESCR", ns);
 
-                    List<Element> elemList2 = descr.getChildren();
-                    for (Element elem2 : elemList2) {
+                    List<Element> elemDesc = descr.getChildren();
+                    for (Element elemdes : elemDesc) {
 
-                        res = res.concat(elem2.getText() + " ");
+                        res = res.concat(elemdes.getText() + " ");
                     }
 
                     return res;
@@ -111,7 +133,7 @@ public class TEDExtractor extends Extractor{
             }
 
         } catch (Exception io) {
-            // bad namespaces
+                logger.error("Failed parsing "+xmlFile.getName());
         }
         return null;
 
@@ -119,14 +141,14 @@ public class TEDExtractor extends Extractor{
 
     public static void main(String[] args) {
 
-        String lang = "ES";
-        String path = "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\TED\\Data";
+        String lang =  "ES";
+        String path =  "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\TED\\Data";
         String path2 = "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\TED\\Corpus\\" + lang.toLowerCase();
         TEDExtractor ted = new TEDExtractor();
         ted.setDataSource(new File(path));
         ted.setOutputDir(new File(path2));
 
-        ted.extractCorpus(lang, ted.getDataSource());
+        ted.createCorpus(lang, ted.getDataSource());
 
     }
 

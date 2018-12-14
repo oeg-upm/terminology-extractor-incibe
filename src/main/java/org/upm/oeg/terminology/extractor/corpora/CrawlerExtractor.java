@@ -14,6 +14,7 @@ import com.mongodb.MongoClientURI;
 import java.io.File;
 import java.net.UnknownHostException;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 
 /**
@@ -22,6 +23,8 @@ import org.bson.types.ObjectId;
  */
 public class CrawlerExtractor extends Extractor {
     
+    
+    final static Logger logger = Logger.getLogger(CrawlerExtractor.class); 
     
     private File DataSource;
     private File OutputDir;
@@ -43,43 +46,17 @@ public class CrawlerExtractor extends Extractor {
     }
 
   
+  
     
-    public void extractCorpus(String Language, File Directory) {
-
-        for (File f : Directory.listFiles()) {
-
-            if (f.isDirectory()) {
-                extractCorpus(Language, f);
-            }
-
-            if ((f.isFile()) && (f.getName().endsWith(".xml"))) {
-
-                processFile(Language, f);
-            }
-
-        }
-
-    }
-
-    public void processFile(String Language, File xmlFile) {
-
-      
-    }
-    
-       public String parseXMLFile() throws UnknownHostException {
+       public String connectMongoDatabase() throws UnknownHostException {
 
        
            MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
            
-           //MongoClient mongoClient = new MongoClient();
+        
            DB database = mongoClient.getDB("mydatabase");
            DBCollection collection = database.getCollection("incibe");
-           
-          // DBObject query = new BasicDBObject("_id", "*");
-          //      DBCursor cursor = collection.find(query);
-           // DBObject jo = cursor.one();
-          
-           
+
            DBCursor cursor = collection.find();
            while (cursor.hasNext()) {
                DBObject obj = cursor.next();
@@ -87,11 +64,11 @@ public class CrawlerExtractor extends Extractor {
                
                ObjectId id=(ObjectId) obj.get("_id");
                
-                //do your thing
+               
                 
                 
                 if(text==null)continue;
-                createCompleteFileWithText(id.toString(), this.getOutputDir().getAbsolutePath(), text);
+                createFile(id.toString(), this.getOutputDir().getAbsolutePath(), text);
            }
 
         return null;
@@ -100,14 +77,12 @@ public class CrawlerExtractor extends Extractor {
 
     public static void main(String[] args) throws UnknownHostException {
 
-        //String lang = "ES";
-        //String path = "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\TED\\Data";
-        String path2 = "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\CRAWLER\\Corpus\\" ;
-        CrawlerExtractor ted = new CrawlerExtractor();
-        ted.setOutputDir(new File(path2));
+       
+        String CorpusPath = "D:\\NextCloudCiber\\FTP\\ExtractorTerminologico\\TerminologyExtractorCorpus\\CRAWLER\\Corpus\\" ;
+        CrawlerExtractor craw = new CrawlerExtractor();
+        craw.setOutputDir(new File(CorpusPath));
 
-        //ted.extractCorpus(lang, ted.getDataSource());
-        ted.parseXMLFile();
+        craw.connectMongoDatabase();
     }
 
 

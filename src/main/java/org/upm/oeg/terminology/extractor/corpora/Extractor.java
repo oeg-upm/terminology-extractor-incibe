@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -18,8 +19,9 @@ import java.io.Writer;
  */
 public class Extractor {
     
+    final static Logger logger = Logger.getLogger(Extractor.class); 
     
-    public static File createCompleteFileWithText(String FileName, String Dir, String Text) {
+    public static File createFile(String FileName, String Dir, String Text) {
 
         File file = null;
         try {
@@ -33,12 +35,13 @@ public class Extractor {
 
             out.flush();
             out.close();
+            logger.info(FileName+"  created");
 
         } catch (IOException e) {
             //logger.error(e);
 
         }
-
+        
         return file;
 
     }
